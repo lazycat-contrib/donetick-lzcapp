@@ -1,0 +1,31 @@
+lzc-sdk-version: "0.1"
+name: Donetick
+package: cloud.lazycat.app.donetick
+version: 0.0.32
+description: Donetick 是一款开源、用户友好的应用程序，旨在帮助使用者有效组织任务。
+homepage: https://github.com/donetick/donetick
+author: donetick
+application:
+  subdomain: donetick
+  background_task: true
+  multi_instance: false
+  gpu_accel: false
+  kvm_accel: false
+  usb_accel: false
+  routes:
+    - /=http://donetick.cloud.lazycat.app.donetick.lzcapp:2021/
+  public_path:
+    - /   
+services:
+  donetick:
+    image: registry.lazycat.cloud/czyt/donetick/donetick:f15976c14d37f38f
+    environment:
+      - DT_ENV=selfhosted
+      - DT_SQLITE_PATH=/donetick-data/donetick.db
+    binds:
+      - /lzcapp/var/donetick-data:/donetick-data
+      - /lzcapp/var/config:/config
+    setup_script: |     
+      if [ -z "$(find /config/selfhosted.yaml -mindepth 1 -maxdepth 1)" ]; then
+          cp  /lzcapp/pkg/content/selfhosted.yaml  /config/
+      fi
