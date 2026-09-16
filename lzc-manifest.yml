@@ -4,22 +4,20 @@ application:
   multi_instance: false
   public_path:
     - /
-
   upstreams:
     - location: /
       backend: http://donetick:2021/
-
 services:
   donetick:
-    # upstream: donetick/donetick:v0.1.76
-    image: donetick/donetick:v0.1.76
+    # upstream: donetick/donetick:v0.1.79
+    image: registry.lazycat.cloud/czyt/donetick/donetick:64968ceb3d2adc13
     environment:
       - DT_ENV=selfhosted
       - DT_SQLITE_PATH=/donetick-data/donetick.db
     binds:
       - /lzcapp/var/donetick-data:/donetick-data
       - /lzcapp/var/config:/config
-    setup_script: |     
+    setup_script: |
       if [ -z "$(find /config/selfhosted.yaml -mindepth 1 -maxdepth 1)" ]; then
           cp  /lzcapp/pkg/content/selfhosted.yaml  /config/
       fi
