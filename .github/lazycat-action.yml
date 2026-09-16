@@ -1,0 +1,41 @@
+version: 1
+
+project:
+  root: .
+  build_config: lzc-build.yml
+  package_file: package.yml
+  output: .lazycat-build/donetick.lpk
+  target_arch: amd64
+
+update:
+  strategy: publish
+  allow_downgrade: false
+  version_source:
+    type: image
+    image: donetick
+
+build:
+  run_buildscript: false
+
+images:
+  # 主应用：上游有完整三段 v 前缀 SemVer tag（最新 stable v0.1.76），排除 latest/beta/*-beta.* 等
+  - id: donetick
+    target: service
+    service: donetick
+    source: donetick/donetick
+    channel: stable
+    sort: semver
+    tag_regex: '^v?\d+\.\d+\.\d+$'
+    delivery:
+      mode: lazycat
+
+stores:
+  official:
+    enabled: true
+    skip_if_version_exists: true
+    changelog_locales: [zh, en]
+  private:
+    enabled: true
+    skip_if_version_exists: true
+    name: Donetick
+    summary: "开源、用户友好的任务组织应用"
